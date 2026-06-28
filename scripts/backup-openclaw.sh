@@ -16,19 +16,29 @@ if [[ "$(basename "$OW_DIR")" != "oc-tools" ]] && [[ "$(pwd)" != "$OW_DIR" ]]; t
     exit 1
 fi
 
-# Change to openclaw workspace root
-cd /root/.openclaw/workspace
+# Change to openclaw root (not workspace - config/plugins/memory are at root level)
+cd /root/.openclaw
 
 mkdir -p "$BACKUP_DIR"
 
 echo "📦 Creating OpenClaw backup: $FILENAME"
 
 tar -czvf "$DEST" \
+    --exclude='node_modules' \
+    --exclude='.git' \
+    --exclude='*.pyc' \
+    --exclude='__pycache__' \
     .env \
+    openclaw.json \
     config/ \
     data/ \
     plugins/ \
     memory/ \
+    credentials/ \
+    extensions/ \
+    agents/ \
+    flows/ \
+    tasks/ \
     2>/dev/null || true
 
 BACKUP_SIZE=$(du -h "$DEST" | cut -f1)
